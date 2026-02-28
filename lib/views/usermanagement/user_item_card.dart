@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+
+class UserItemCard extends StatelessWidget {
+  final Map<String, String> user;
+  final VoidCallback onTap;
+
+  const UserItemCard({super.key, required this.user, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 6.0),
+      elevation: 2,
+      shadowColor: Colors.black26,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        leading: CircleAvatar(
+          backgroundColor: Colors.blue.shade100,
+          child: Text(
+            user['name']![0], // Lấy chữ cái đầu tiên
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1A5FAD),
+            ),
+          ),
+        ),
+        title: Text(
+          user['name']!,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1A5FAD),
+            fontSize: 16,
+          ),
+        ),
+        subtitle: Text(
+          '${user['dob']}・${user['address']}',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(color: Colors.black54),
+        ),
+        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+        onTap: onTap,
+      ),
+    );
+  }
+}
