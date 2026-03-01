@@ -23,7 +23,7 @@ class ManagedUserApi implements IManagedUserApi{
   Future<ManagedUserDto?> getById(int id) async {
     final db = await database.db;
     final rows = await db.query(
-      'managed_user',
+      'managed_users',
        where: 'id = ?',
        whereArgs: [id],
       limit: 1,

@@ -1,7 +1,8 @@
+import 'package:core_demo_slot5/domain/entities/managed_user.dart';
 import 'package:flutter/material.dart';
 
 class UserItemCard extends StatelessWidget {
-  final Map<String, String> user;
+  final ManagedUser user; // Thay đổi từ Map sang ManagedUser
   final VoidCallback onTap;
 
   const UserItemCard({super.key, required this.user, required this.onTap});
@@ -18,7 +19,7 @@ class UserItemCard extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: Colors.blue.shade100,
           child: Text(
-            user['name']![0], // Lấy chữ cái đầu tiên
+            user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : '?',
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Color(0xFF1A5FAD),
@@ -26,7 +27,7 @@ class UserItemCard extends StatelessWidget {
           ),
         ),
         title: Text(
-          user['name']!,
+          user.fullName,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF1A5FAD),
@@ -34,7 +35,7 @@ class UserItemCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          '${user['dob']}・${user['address']}',
+          '${user.dob} ・ ${user.address}',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(color: Colors.black54),

@@ -14,14 +14,15 @@ class AppDatabase {
     return _db!;
   }
 
-  // Hàm helper để tránh lặp code tạo bảng
+  // Hàm helper chuẩn để tạo bảng managed_users
   Future<void> _createManagedUsersTable(Database db) async {
     await db.execute('''
       CREATE TABLE managed_users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         full_name TEXT NOT NULL,
         dob TEXT NOT NULL,
-        address TEXT NOT NULL
+        address TEXT NOT NULL,
+        created_at TEXT NOT NULL
       );
     ''');
   }
@@ -32,9 +33,9 @@ class AppDatabase {
 
     return openDatabase(
       path,
-      version: 4, // Đã nâng lên phiên bản 3
+      version: 5, // Nâng lên version 5
       onCreate: (Database db, int version) async {
-        // Bảng user (cho việc đăng nhập)
+        // Bảng user
         await db.execute('''
           CREATE TABLE user(  
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -53,7 +54,7 @@ class AppDatabase {
           );
         ''');
 
-        // Tạo bảng managed_users cho người dùng mới cài đặt
+        // Tạo bảng managed_users chuẩn
         await _createManagedUsersTable(db);
 
         // Chèn tài khoản admin mặc định
@@ -63,34 +64,15 @@ class AppDatabase {
         });
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
-        // Logic nâng cấp cơ sở dữ liệu
-        if (oldVersion < 2) {
-          await db.execute('''
-            CREATE TABLE Quanlithongtin(
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              ten TEXT NOT NULL,
-              ngay_sinh TEXT NOT NULL,
-              dia_chi TEXT
-            );
-          ''');
-        }
-        if (oldVersion < 3) {
-          // Tạo bảng managed_users cho người dùng cũ đang nâng cấp
-          await db.execute(''' 
-            CREATE TABLE managed_users(
-              id INTEGER PRIMARY KEY CHECK (id = 1),
-              full_name TEXT NOT NULL,
-              dob TEXT NOT NULL ,
-              address TEXT NOT NULL,
-              created_at TEXT NOT NULL);
-            ''');
-        }
-        if (oldVersion < 4) {
-          await db.execute('DROP TABLE IF EXISTS Quanlithongtin;');
+        if (oldVersion < 5) {
+          // Xóa bảng lỗi nếu có và tạo lại bảng chuẩn
+          await db.execute('DROP TABLE IF EXISTS managed_users');
+          await db.execute('DROP TABLE IF EXISTS Quanlithongtin');
+          await _createManagedUsersTable(db);
         }
       },
-
     );
   }
-}
 
+
+}
